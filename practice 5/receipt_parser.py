@@ -1,54 +1,60 @@
 import re
 import json
 
-with open("raw.txt", "r", encoding="utf-8") as f:
+def normalize_price(price_str):
+    return float(price_str.replace(" ", "").replace(",", "."))
+
+with open(r"C:\Negr\PP2\PP2-Tasks\Practice5\raw.txt", "r", encoding="utf-8") as f:
     text = f.read()
 
-def normalize_price(price):
-    price = price.replace(" ", "").replace(",", ".")
-    return float(price)
+#1. Extract all prices
 
-product_pattern = re.findall(
-    r"\d+\.\s*\n(.+?)\n\s*\d+,\d+\s*x\s*([\d\s,]+)",
-    text,
-    re.DOTALL
-)
+price_pattern = r"\d[\d ]*,\d{2}"
+all_prices_raw = re.findall(price_pattern, text)
+all_prices = [normalize_price(p) for p in all_prices_raw]
 
-products = []
-prices = []
 
-for name, price in product_pattern:
-    clean_name = " ".join(name.split())
-    value = normalize_price(price)
-    products.append({
-        "name": clean_name,
-        "price_per_item": value
-    })
-    prices.append(value)
+#2. Find all product names
 
-total_match = re.search(r"ИТОГО:\s*([\d\s,]+)", text)
-total_amount = normalize_price(total_match.group(1)) if total_match else 0
+product_pattern = r"\d+\.\n(.+)"
+product_names = re.findall(product_pattern, text)
 
-payment_match = re.search(r"(Банковская карта|Наличные)", text)
-payment_method = payment_match.group(1) if payment_match else "Unknown"
 
-datetime_match = re.search(
-    r"Время:\s*(\d{2}\.\d{2}\.\d{4})\s*(\d{2}:\d{2}:\d{2})",
-    text
-)
+#3. Calculate total amount
 
-date = datetime_match.group(1) if datetime_match else ""
-time = datetime_match.group(2) if datetime_match else ""
+item_total_pattern = r"x [\d ]+,\d{2}\n([\d ]+,\d{2})"
+item_totals_raw = re.findall(item_total_pattern, text)
+item_totals = [normalize_price(t) for t in item_totals_raw]
 
-calculated_total = round(sum(prices), 2)
+calculated_total = sum(item_totals)
+
+
+#4. Extract date and time
+
+datetime_pattern = r"Время:\s(\d{2}\.\d{2}\.\d{4})\s(\d{2}:\d{2}:\d{2})"
+datetime_match = re.search(datetime_pattern, text)
+
+date = datetime_match.group(1) if datetime_match else None
+time = datetime_match.group(2) if datetime_match else None
+
+
+#5. Find payment method
+
+payment_pattern = r"(Банковская карта|Наличные)"
+payment_match = re.search(payment_pattern, text)
+
+payment_method = payment_match.group(1) if payment_match else None
+
+
+#6. Structured output (JSON)
 
 result = {
+    "product_names": product_names,
+    "all_prices": all_prices,
+    "calculated_total": calculated_total,
     "date": date,
     "time": time,
-    "payment_method": payment_method,
-    "total_from_receipt": total_amount,
-    "calculated_total": calculated_total,
-    "products": products
+    "payment_method": payment_method
 }
 
-print(json.dumps(result, indent=4, ensure_ascii=False))
+print(json.dumps(result, ensure_ascii=False, indent=4))
