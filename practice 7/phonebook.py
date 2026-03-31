@@ -5,7 +5,7 @@ DB_PARAMS = {
     "host": "localhost",
     "database": "phonebook_db",
     "user": "postgres",
-    "password": "",  
+    "password": "Aruzhan2007",  
     "port": "5432"
 }
 
