@@ -103,7 +103,7 @@ class EnemyCar:
             -self.HEIGHT,
             self.WIDTH, self.HEIGHT
         )
-        self.colour = random.choice([RED, GREEN, ORANGE, (150, 50, 200)])
+        self.colour = random.choice([RED, GREEN, ORANGE, WHITE, (150, 50, 200, 255)])
         # Speed may vary slightly per enemy for variety
         self.speed  = base_speed + random.uniform(-0.3, 0.3)
 
@@ -120,6 +120,7 @@ class EnemyCar:
         pygame.draw.rect(surface, self.colour, self.rect, border_radius=6)
         wshield = pygame.Rect(self.rect.x + 5, self.rect.y + 8, self.WIDTH - 10, 18)
         pygame.draw.rect(surface, (255, 230, 180), wshield, border_radius=3)
+        # pygame.draw.rect(surface, (255,255,255),wshield, border_radius=3)
         for wx, wy in [(self.rect.x - 5, self.rect.y + 8),
                        (self.rect.right - 5, self.rect.y + 8),
                        (self.rect.x - 5, self.rect.bottom - 22),
@@ -378,3 +379,11 @@ class RacerGame:
 if __name__ == "__main__":
     game = RacerGame()
     game.run()
+    
+    
+    
+    
+    
+    
+    
+    

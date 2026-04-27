@@ -120,6 +120,8 @@ class Food:
             pygame.draw.circle(surface, (*WHITE, alpha), (px, py), CELL // 2 - 1, 2)
         else:
             pygame.draw.circle(surface, self.colour, (px, py), CELL // 2 - 2)
+            
+        
 
         # Show score value on the food
         font_s = pygame.font.SysFont("arial", 11, bold=True)

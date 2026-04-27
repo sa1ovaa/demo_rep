@@ -21,7 +21,7 @@ car_width = 50
 car_height = 100
 car_x = WIDTH // 2 - car_width // 2
 car_y = HEIGHT - car_height - 10
-car_speed = 5
+car_speed = 10
 
 # Coins
 coin_size = 30
