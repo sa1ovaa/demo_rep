@@ -15,9 +15,24 @@
     "distance": 17
   },
   {
+    "name": "sa",
+    "score": 28,
+    "distance": 125
+  },
+  {
+    "name": "\u0432",
+    "score": 27,
+    "distance": 1231
+  },
+  {
     "name": "Player",
     "score": 24,
     "distance": 12
+  },
+  {
+    "name": "\u0432",
+    "score": 23,
+    "distance": 0
   },
   {
     "name": "s",
@@ -25,23 +40,13 @@
     "distance": 82
   },
   {
-    "name": "s",
-    "score": 1,
-    "distance": 12
+    "name": "sa",
+    "score": 12,
+    "distance": 71
   },
   {
-    "name": "Player",
-    "score": 0,
-    "distance": 177
-  },
-  {
-    "name": "Player",
-    "score": 0,
-    "distance": 24
-  },
-  {
-    "name": "s",
-    "score": 0,
-    "distance": 77
+    "name": "ams",
+    "score": 10,
+    "distance": 56
   }
 ]

@@ -18,7 +18,6 @@ def main():
                 action = game_over_screen(screen, score, distance, score)
                 if action == "menu":
                     break
-                # "retry" loops back
         elif choice == "Leaderboard":
             leaderboard_screen(screen)
         elif choice == "Settings":

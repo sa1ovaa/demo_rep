@@ -113,10 +113,8 @@ def settings_screen(screen):
         screen.fill(BLACK)
         screen.blit(get_font(28).render("SETTINGS", True, WHITE),
                     get_font(28).render("SETTINGS", True, WHITE).get_rect(center=(W//2, 36)))
-        # sound toggle
         snd_btn = pygame.Rect(W//2-80, 100, 160, 36)
         draw_button(screen, f"Sound: {'ON' if s['sound'] else 'OFF'}", snd_btn, snd_btn.collidepoint(mx,my))
-        # difficulty
         screen.blit(get_font(18).render("Difficulty:", True, GRAY), (20, 160))
         diff_rects = []
         for i, d in enumerate(diff_opts):
@@ -125,7 +123,6 @@ def settings_screen(screen):
             pygame.draw.rect(screen, (80,80,80) if s["difficulty"]!=d else (0,160,0), r, border_radius=5)
             pygame.draw.rect(screen, WHITE, r, 1, border_radius=5)
             screen.blit(get_font(16).render(d, True, WHITE), get_font(16).render(d, True, WHITE).get_rect(center=r.center))
-        # car color
         screen.blit(get_font(18).render("Car Color:", True, GRAY), (20, 240))
         color_rects = []
         for i, (name, rgb) in enumerate(color_opts):

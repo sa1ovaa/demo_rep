@@ -1,7 +1,7 @@
-DB_CONFIG = {
+config = {
     "host": "localhost",
-    "dbname": "postgres",
+    "database": "phonebook",
     "user": "postgres",
-    "password": "свой пароль",
+    "password": "Aruzhan2007",
     "port": "5432"
 }
