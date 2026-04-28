@@ -1,17 +1,11 @@
-"""
-PhoneBook — TSIS 1
-Requires: psycopg2, database.ini in the same folder, setup.sql already run in psql.
-"""
-
 import psycopg2
 import csv
 import json
-from config import load_config
+from config import config
 
 
 def get_conn():
-    return psycopg2.connect(**load_config())
-
+    return psycopg2.connect(**config)
 
 def print_row(row):
     """Print one contact. Row = (id, username, email, birthday, group, phones)"""
@@ -22,8 +16,6 @@ def print_row(row):
           f"  | group: {grp or '-'}"
           f"  | phones: {phones or '-'}")
 
-
-# ── 1. CHECK SETUP ───────────────────────────────────────────────────────────
 
 def check_setup():
     """Verify that tables and procedures exist in the database."""
@@ -72,8 +64,6 @@ def check_setup():
         print("Check your database.ini credentials.")
 
 
-# ── 2. UPSERT  (from Practice 8) ─────────────────────────────────────────────
-
 def upsert_contact():
     """Add a contact + phone. If username exists, just adds the phone."""
     username = input("Username: ").strip()
@@ -89,8 +79,6 @@ def upsert_contact():
     except Exception as e:
         print(f"Error: {e}")
 
-
-# ── 3. BULK INSERT  (from Practice 8) ────────────────────────────────────────
 
 def bulk_insert():
     """Insert many contacts at once. Invalid entries are skipped with a warning."""
@@ -116,8 +104,6 @@ def bulk_insert():
         print(f"Error: {e}")
 
 
-# ── 4. UPDATE  (from Practice 7) ─────────────────────────────────────────────
-
 def update_contact():
     """Update username, email, or birthday of a contact."""
     print("Update:  1.Username  2.Email  3.Birthday")
@@ -142,9 +128,6 @@ def update_contact():
     except Exception as e:
         print(f"Error: {e}")
 
-
-# ── 5. ADD PHONE  (new — calls add_phone procedure) ──────────────────────────
-
 def add_phone():
     """Add an extra phone number to an existing contact."""
     name  = input("Username: ").strip()
@@ -163,8 +146,6 @@ def add_phone():
         print(f"Error: {e}")
 
 
-# ── 6. MOVE TO GROUP  (new — calls move_to_group procedure) ──────────────────
-
 def move_to_group():
     """Move a contact to a group. Creates the group if it doesn't exist."""
     name  = input("Username: ").strip()
@@ -182,8 +163,6 @@ def move_to_group():
         print(f"Error: {e}")
 
 
-# ── 7. QUERY  (from Practice 7 + sort) ───────────────────────────────────────
-
 def query_contacts():
     """Search by name / phone / email with sorting."""
     print("Filter:  1.Name  2.Phone prefix  3.Email")
@@ -192,7 +171,6 @@ def query_contacts():
     sort = {"1":"c.username","2":"c.birthday","3":"c.created_at"}.get(
             input("Choice: ").strip(), "c.username")
 
-    # Base query — same JOIN structure for all three modes
     base = f"""
         SELECT c.id, c.username, c.email, c.birthday, g.name,
                STRING_AGG(p.phone||' ('||COALESCE(p.type,'?')||')', ', ')
@@ -230,8 +208,6 @@ def query_contacts():
     except Exception as e:
         print(f"Error: {e}")
 
-
-# ── 8. FILTER BY GROUP  (new) ─────────────────────────────────────────────────
 
 def filter_by_group():
     """Show contacts from one group."""
@@ -271,7 +247,6 @@ def filter_by_group():
         print(f"Error: {e}")
 
 
-# ── 9. FULL SEARCH  (new — calls search_contacts function) ───────────────────
 
 def full_search():
     """Search name + email + all phone numbers at once."""
@@ -288,8 +263,6 @@ def full_search():
     except Exception as e:
         print(f"Error: {e}")
 
-
-# ── 10. PAGINATED BROWSE  (from Practice 8 + next/prev loop) ─────────────────
 
 def paginated_browse():
     """Browse page by page. Commands: next / prev / quit"""
@@ -323,8 +296,6 @@ def paginated_browse():
         elif cmd == "quit": break
 
 
-# ── 11. DELETE  (from Practice 8) ────────────────────────────────────────────
-
 def delete_contact():
     """Delete by username or phone number."""
     print("Delete by:  1.Username  2.Phone")
@@ -346,8 +317,6 @@ def delete_contact():
     except Exception as e:
         print(f"Error: {e}")
 
-
-# ── 12. CSV IMPORT  (from Practice 7, extended) ───────────────────────────────
 
 def csv_import():
     """Import from CSV. Columns: username, phone, phone_type, email, birthday, group"""
@@ -376,7 +345,6 @@ def csv_import():
                     birthday   = row.get('birthday','').strip() or None
                     group_name = row.get('group','').strip() or None
 
-                    # resolve group_id
                     group_id = None
                     if group_name:
                         cur.execute(
@@ -386,7 +354,6 @@ def csv_import():
                         res = cur.fetchone()
                         group_id = res[0] if res else None
 
-                    # insert contact
                     cur.execute("""
                         INSERT INTO phonebook (username, email, birthday, group_id)
                         VALUES (%s,%s,%s,%s)
@@ -398,7 +365,6 @@ def csv_import():
                     else:
                         inserted += 1
 
-                    # insert phone
                     if phone:
                         cur.execute("SELECT id FROM phonebook WHERE username=%s;",
                                     (username,))
@@ -414,8 +380,6 @@ def csv_import():
     except Exception as e:
         print(f"Error: {e}")
 
-
-# ── 13. EXPORT JSON  (new) ────────────────────────────────────────────────────
 
 def export_json():
     """Export all contacts to a JSON file."""
@@ -444,9 +408,6 @@ def export_json():
         print(f"Exported {len(out)} contacts to '{path}'.")
     except Exception as e:
         print(f"Error: {e}")
-
-
-# ── 14. IMPORT JSON  (new) ────────────────────────────────────────────────────
 
 def import_json():
     """Import contacts from a JSON file. Asks skip/overwrite on duplicates."""
@@ -518,8 +479,6 @@ def import_json():
     except Exception as e:
         print(f"Error: {e}")
 
-
-# ── MENU ──────────────────────────────────────────────────────────────────────
 
 def main():
     actions = {

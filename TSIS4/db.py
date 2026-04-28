@@ -5,7 +5,6 @@ def get_connection():
     return psycopg2.connect(**DB_CONFIG)
 
 def init_db():
-    """Create tables if they don't exist."""
     sql = """
     CREATE TABLE IF NOT EXISTS players (
         id       SERIAL PRIMARY KEY,
@@ -29,7 +28,6 @@ def init_db():
         return False
 
 def get_or_create_player(username):
-    """Return player id, creating the row if needed."""
     try:
         with get_connection() as conn:
             with conn.cursor() as cur:
@@ -44,7 +42,6 @@ def get_or_create_player(username):
         return None
 
 def save_session(username, score, level_reached):
-    """Save a completed game session."""
     try:
         player_id = get_or_create_player(username)
         if player_id is None:
@@ -59,7 +56,6 @@ def save_session(username, score, level_reached):
         print(f"DB save error: {e}")
 
 def get_top10():
-    """Return list of (rank, username, score, level, date) for top 10."""
     try:
         with get_connection() as conn:
             with conn.cursor() as cur:
@@ -78,7 +74,6 @@ def get_top10():
         return []
 
 def get_personal_best(username):
-    """Return the player's highest score, or 0 if none."""
     try:
         with get_connection() as conn:
             with conn.cursor() as cur:

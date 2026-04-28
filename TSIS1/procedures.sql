@@ -1,4 +1,3 @@
--- add_phone
 CREATE OR REPLACE PROCEDURE add_phone(
     p_contact_name VARCHAR,
     p_phone VARCHAR,
@@ -18,8 +17,6 @@ BEGIN
 END;
 $$;
 
-
--- move_to_group
 CREATE OR REPLACE PROCEDURE move_to_group(
     p_contact_name VARCHAR,
     p_group_name VARCHAR
@@ -45,8 +42,6 @@ BEGIN
 END;
 $$;
 
-
--- search_contacts
 CREATE OR REPLACE FUNCTION search_contacts(p_query TEXT)
 RETURNS TABLE(
     username VARCHAR,
