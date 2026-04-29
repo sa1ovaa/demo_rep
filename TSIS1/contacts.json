@@ -1,0 +1,56 @@
+[
+    {
+        "id": 1,
+        "username": "Aruzhan",
+        "email": "aruzhan@gmail.com",
+        "birthday": "1990-05-15",
+        "group": "Friend",
+        "phone": "7471850781",
+        "type": "mobile"
+    },
+    {
+        "id": 1,
+        "username": "Aruzhan",
+        "email": "aruzhan@gmail.com",
+        "birthday": "1990-05-15",
+        "group": "Friend",
+        "phone": "+9814512",
+        "type": "mobile"
+    },
+    {
+        "id": 7,
+        "username": "Aigerim",
+        "email": "aigerim@mail.ru",
+        "birthday": "1995-08-22",
+        "group": "Family",
+        "phone": "+777123456",
+        "type": "work"
+    },
+    {
+        "id": 8,
+        "username": "Bob",
+        "email": "bob@gmail.com",
+        "birthday": "1988-03-10",
+        "group": "Work",
+        "phone": "+123456789",
+        "type": "home"
+    },
+    {
+        "id": 9,
+        "username": "Charlie",
+        "email": "charlie@outlook.com",
+        "birthday": "None",
+        "group": "Other",
+        "phone": "+987654321",
+        "type": "mobile"
+    },
+    {
+        "id": 10,
+        "username": "Dana",
+        "email": "dana@company.kz",
+        "birthday": "2000-12-01",
+        "group": "Work",
+        "phone": "+555666777",
+        "type": "work"
+    }
+]

@@ -40,13 +40,13 @@
     "distance": 82
   },
   {
+    "name": "a",
+    "score": 13,
+    "distance": 555
+  },
+  {
     "name": "sa",
     "score": 12,
     "distance": 71
-  },
-  {
-    "name": "ams",
-    "score": 10,
-    "distance": 56
   }
 ]

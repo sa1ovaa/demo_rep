@@ -1,3 +1,7 @@
+DROP FUNCTION IF EXISTS search_contacts(TEXT);
+DROP PROCEDURE IF EXISTS add_phone(VARCHAR, VARCHAR, VARCHAR);
+DROP PROCEDURE IF EXISTS move_to_group(VARCHAR, VARCHAR);
+
 CREATE OR REPLACE PROCEDURE add_phone(
     p_contact_name VARCHAR,
     p_phone VARCHAR,
@@ -6,16 +10,24 @@ CREATE OR REPLACE PROCEDURE add_phone(
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    c_id INTEGER;
+    v_contact_id INTEGER;
 BEGIN
-    SELECT id INTO c_id
+    SELECT id INTO v_contact_id
     FROM contacts
     WHERE username = p_contact_name;
 
+    IF v_contact_id IS NULL THEN
+        RAISE NOTICE 'Contact not found';
+        RETURN;
+    END IF;
+
     INSERT INTO phones(contact_id, phone, type)
-    VALUES (c_id, p_phone, p_type);
+    VALUES (v_contact_id, p_phone, p_type);
+
+    RAISE NOTICE 'Phone added successfully';
 END;
 $$;
+
 
 CREATE OR REPLACE PROCEDURE move_to_group(
     p_contact_name VARCHAR,
@@ -24,41 +36,56 @@ CREATE OR REPLACE PROCEDURE move_to_group(
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    g_id INTEGER;
+    v_group_id INTEGER;
 BEGIN
-    SELECT id INTO g_id
+    INSERT INTO groups(name)
+    VALUES (p_group_name)
+    ON CONFLICT (name) DO NOTHING;
+
+    SELECT id INTO v_group_id
     FROM groups
     WHERE name = p_group_name;
 
-    IF g_id IS NULL THEN
-        INSERT INTO groups(name)
-        VALUES (p_group_name)
-        RETURNING id INTO g_id;
-    END IF;
-
     UPDATE contacts
-    SET group_id = g_id
+    SET group_id = v_group_id
     WHERE username = p_contact_name;
+
+    RAISE NOTICE 'Contact moved successfully';
 END;
 $$;
 
+
 CREATE OR REPLACE FUNCTION search_contacts(p_query TEXT)
-RETURNS TABLE(
+RETURNS TABLE (
+    id INTEGER,
     username VARCHAR,
     email VARCHAR,
-    phone VARCHAR
+    birthday DATE,
+    group_name VARCHAR,
+    phone VARCHAR,
+    phone_type VARCHAR
 )
 LANGUAGE plpgsql
 AS $$
 BEGIN
     RETURN QUERY
-    SELECT c.username, c.email, p.phone
+    SELECT
+        c.id,
+        c.username,
+        c.email,
+        c.birthday,
+        g.name,
+        p.phone,
+        p.type
     FROM contacts c
+    LEFT JOIN groups g
+        ON c.group_id = g.id
     LEFT JOIN phones p
-    ON c.id = p.contact_id
-    WHERE
-        c.username ILIKE '%' || p_query || '%'
-        OR c.email ILIKE '%' || p_query || '%'
-        OR p.phone ILIKE '%' || p_query || '%';
+        ON c.id = p.contact_id
+    WHERE c.username ILIKE '%' || p_query || '%'
+       OR c.email ILIKE '%' || p_query || '%'
+       OR p.phone ILIKE '%' || p_query || '%'
+       OR g.name ILIKE '%' || p_query || '%'
+    ORDER BY c.id;
 END;
 $$;
